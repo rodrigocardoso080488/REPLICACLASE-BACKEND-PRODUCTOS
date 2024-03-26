@@ -11,12 +11,12 @@ const path=require('path');
 require('dotenv').config();
 
 //se lo importa en en el index xq es donde se levanta nuestro servidor.
-const databaseConnection = require('./databaseConnection.jS')
+const databaseConnection = require('./databaseConnection.js')
 //Conexíon a la base de datos. Debe llamarse a databaseConnection después de configurar el acceso a las variables de entorno.
 databaseConnection();
 
 //Para acceder a las rutas de usuario.
-const UserRoutes=require('./Routes/Routes.js');
+const UserRoutes=require('./Routes/UserRoutes.js');
 
 //Configuraciones iniciales
 //1ro-Para iniciar nuestro servidor, hay que instanciarlo a express. Por convención se lo guarda en app. La instancia de la aplicación Express es el punto de entrada principal para construir una aplicación web con Express en Node.js.
@@ -30,7 +30,7 @@ app.set('port',process.env.PORT || 9001);
 //Ahora hay que configurar o habilitar para que el puerto 9001 pueda escuchar(listen) las solicitudes. Para eso hay que instanciarlo a express, seguido del método listen y pasar los argumentos:
 //1ro. app.get("puerto").
 //2do. una callback. Se configura un mensaje para ver si esta funcionando. probar en la terminar(npm run dev: Si se ve el mensaje, indica que nuestro servidor esta funcionando)
-app.listen(app.get('port'),()=>{
+app.listen(app.get('port'), ()=>{
     console.log(`BACKEND PRODUCTS LISTENING IN PORT ${app.get('port')}`);
 });
 
@@ -71,6 +71,6 @@ app.get('/test', async(req, res, next)=>{
     }
 });
 //Para poder usar las rutas de usuario. Le pasamos como parámetros:
-//1ro-La base: Es la ruta base de la ruta de todos los usuario. Se cambiará el método.
-//2do-La instancia de express (app)
+//1ro-La base: Es la ruta base de la ruta de todos los usuario(ya se usuarios comunes o admin). Se cambiará el método.
+//2do-La instancia de express (app).
 UserRoutes('/users', app)
