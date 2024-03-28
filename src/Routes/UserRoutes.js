@@ -31,6 +31,7 @@ const UserRoutes=(base, app)=>{
             return res.status(500).json({message: "Ocurrió un error al intentar crear el usuario"});
         }
     });
+    
     //Por convención la ruta para todos los usuarios es solamente la base (/users). La declaramos en index.js
     app.post(`${base}`, async(req, res, next)=>{
         try {
@@ -54,7 +55,18 @@ const UserRoutes=(base, app)=>{
             return res.status(500).json({message:"Ocurrió un error al intentar eliminar el usuario"});
         }
     });
+
+    //Creo la ruta para que un usuario inicie sesión. No puedo usar el método Get porque cuando el cliente le manda al backend el email y password, el navegador, por medidas de seguridad automáticamente elimina el body. Se DEBE USAR EL MÉTODO POST.
+
+     app.post(`${base}/login`, async(req, res, next)=>{
+        try {
+            const response = await controller.Login(req, res);
+            return response;
+        } catch (error) {
+            next(error);
+        }
+     });
 };
 
 module.exports=UserRoutes;
-//Para poder acceder a las rutas de usuario, tengo que ir al index, js y traer esta ruta que acabo de crear.
+//Para poder acceder a las rutas de usuario, tengo que ir al index.js y traer esta ruta que acabo de crear.

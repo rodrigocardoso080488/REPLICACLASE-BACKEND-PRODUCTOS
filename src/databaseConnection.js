@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 //4to-Se utiliza el método once del objeto connection para escuchar el evento 'open', que se activa cuando la conexión a la base de datos se establece con éxito. Dentro de la función de callback, se imprime en la consola el mensaje "DDBB CONNECT SUCCESSFUL".. es similar a x ej: cambiarColorBtn.addEventListener('click', función que cambia el Color);
 const databaseConnection=()=>{
     const connectionString=process.env.DDBB;
+
     mongoose.connect(connectionString);
     const connection = mongoose.connection;
     connection.once('open',()=>{
@@ -16,5 +17,3 @@ const databaseConnection=()=>{
 }
 //Para poder exportar en el index la función databaseConnection que se encarga de conectar la base de dato, debemos ejecutar el siguiente código:
 module.exports=databaseConnection;
-
-

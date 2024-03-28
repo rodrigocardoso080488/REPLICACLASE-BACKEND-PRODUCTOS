@@ -4,7 +4,10 @@ const UserModel= require ('../Models/UserModel');
 //la siguiente instrucción se encarga de importar el módulo bcrypt en el script actual. Una vez importado, se puede utilizar para realizar operaciones de encriptación y hash de contraseñas de forma segura.
 const bcrypt = require ('bcrypt');
 //para acceder a las funciones creadas en el archivo HelpersFunction.js. creo el nombre del módulo con el nombre de helpers.
-const helpers = require ("../Utils/HelpersFunction")
+const helpers = require ("../Utils/HelpersFunction");
+
+
+const jwt=require("jsonwebtoken");
 
 //ESTAS INSTRUCCIONES REGISTRAN UN USUARIO EN LA BASE DATO. LOS DATOS DEL USUARIO SON VALIDADOS ANTES DE REGISTRARLO. LUEGO SE CREA EL SCRIPT PARA ELIMINAR DICHO USUARIO.
 
@@ -75,5 +78,48 @@ class UserController {
             throw error
         }
     }
-}
+    //Login: Esta función asincrónica maneja la lógica de inicio de sesión de un usuario. 
+    //Primero verifica si se han proporcionado un correo electrónico y una contraseña en el cuerpo de la solicitud.
+    //Luego busca un usuario (con el método findOne) en mi colección en mi base de dato (modelo: userModel) basándose en el correo electrónico proporcionado.
+    //Si no se encuentra ningún usuario(DOCUMENTO), devuelve un mensaje de error.
+    //Luego compara la contraseña (con el método compare) proporcionada con la contraseña almacenada en la base de datos utilizando bcrypt.compare.
+    //Si las contraseña enviada no coincide con el hash de contraseña almacenada en mi base de dato, devuelve un mensaje de error.
+    //Si la comparación es exitosa, genera un token JWT que contiene el ID del usuario y su rol, y lo firma con una clave secreta.
+    //Finalmente, devuelve un objeto JSON que contiene el correo electrónico del usuario, su rol y el token JWT generado.
+    //Ambas funciones manejan errores lanzando excepciones en caso de que ocurra algún problema durante la ejecución.
+    //nota: Una colección es un conjunto de documentos que se almacenan juntos en una base de datos no relacional, como MongoDB. (colección: contenedor que agrupa documentos que comparten una temática o propósito común.)
+    async Login (req, res) {
+        try {
+            const body = req.body;
+            if (body.email==="" || body.email===undefined) {
+                throw new Error("Debe enviar un email");
+            }
+            if (body.password==="" || body.password===undefined) {
+                throw new Error("Debe enviar un password")
+            }
+            const user = await UserModel.findOne({email: body.email});
+
+            if(user===null){
+                return res.status(404).json({message:"email y/o password incorrecto"});
+            }
+            const compare = await bcrypt.compare(body.password, user.password);
+
+            if (!compare) {
+                return res.status(404).json({message:"Email y/o password incorrecto"})
+            }
+            const token=jwt.sign({
+                _id:user._id, 
+                role:user.User
+            }, process.env.SECRET_KEY, {expiresIn: '1D'});
+
+            return res.status(200).json({
+                email: user.email, 
+                role: user.role, 
+                token: token
+            });
+        } catch (error) {
+            throw error
+        }
+    }
+};
 module.exports = UserController;

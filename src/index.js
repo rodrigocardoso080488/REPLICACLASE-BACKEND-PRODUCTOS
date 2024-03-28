@@ -10,7 +10,7 @@ const path=require('path');
 //Para configurar el acceso a las variables de entorno.
 require('dotenv').config();
 
-//se lo importa en en el index xq es donde se levanta nuestro servidor.
+//se lo importa en el index xq es donde se levanta nuestro servidor.
 const databaseConnection = require('./databaseConnection.js')
 //Conexíon a la base de datos. Debe llamarse a databaseConnection después de configurar el acceso a las variables de entorno.
 databaseConnection();
@@ -25,7 +25,7 @@ const app=express();
 //Configurar el puerto donde se va a ejecutar nuestro servidor-backend.Para eso debemos usar la instancia de express, seguida del método set y de los siguientes parámetros:
 // 1ro-El nombre del puerto. 
 // 2do-El puerto que quiero ocupar(Debo indicar el puerto que definí en la variable de entorno. Si no esta definido o esta ocupado para otra cosa, debemos seteár un puerto opcional).Siempre tiene que haber un puerto que escuche las solicitudes.
-app.set('port',process.env.PORT || 9001);
+app.set('port', process.env.PORT || 9001);
 
 //Ahora hay que configurar o habilitar para que el puerto 9001 pueda escuchar(listen) las solicitudes. Para eso hay que instanciarlo a express, seguido del método listen y pasar los argumentos:
 //1ro. app.get("puerto").
@@ -70,7 +70,7 @@ app.get('/test', async(req, res, next)=>{
        next(error);
     }
 });
-//Para poder usar las rutas de usuario. Le pasamos como parámetros:
-//1ro-La base: Es la ruta base de la ruta de todos los usuario(ya se usuarios comunes o admin). Se cambiará el método.
-//2do-La instancia de express (app).
+//Se llama a la función UserRoutes, la cual se encarga de definir las rutas relacionadas con los usuarios en la aplicación. Le pasamos como parámetros:
+//1ro-La base: al pasarle '/users', le estoy especificando que las rutas de usuario estarán bajo la URL base '/users'
+//2do-La instancia de express (app). Al pasar esta instancia como segundo parámetro, la función UserRoutes podrá definir las rutas en la aplicación Express.
 UserRoutes('/users', app)
